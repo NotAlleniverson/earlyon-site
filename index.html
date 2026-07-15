@@ -7,6 +7,8 @@
 <meta property="og:title" content="Capri Skin | Wake Up Radiant — The Capri Eye Mask">
 <meta property="og:description" content="Six key actives. One 15-minute Mediterranean ritual. Brightening & glow under-eye masks inspired by the Isle of Capri.">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1559509354-1c00ed744bcb?auto=format&fit=crop&w=1200&q=80">
+<meta name="theme-color" content="#10294B">
 <title>Capri Skin | The Capri Eye Mask — Wake Up Radiant</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310294B'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' fill='%23D9BE7F' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -263,7 +265,72 @@ nav.site-nav.scrolled { box-shadow: 0 10px 40px -18px rgba(16,41,75,0.25); }
   border: 1px solid rgba(247,244,237,0.45);
 }
 .btn-ghost:hover { border-color: var(--gold-bright); color: var(--gold-bright); }
-.btn-nav { padding: 0.78rem 1.5rem; min-height: 42px; }
+.btn-nav { padding: 0.78rem 1.5rem; min-height: 44px; }
+
+/* ---------- mobile menu ---------- */
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  width: 44px; height: 44px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.menu-btn span {
+  display: block;
+  width: 22px; height: 1.6px;
+  background: var(--navy);
+  transition: transform 0.4s var(--ease), opacity 0.3s;
+}
+.menu-open .menu-btn span:nth-child(1) { transform: translateY(7.6px) rotate(45deg); }
+.menu-open .menu-btn span:nth-child(2) { opacity: 0; }
+.menu-open .menu-btn span:nth-child(3) { transform: translateY(-7.6px) rotate(-45deg); }
+
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  z-index: 290;
+  background: linear-gradient(180deg, #0B1D38 0%, #12305A 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s var(--ease), visibility 0.45s;
+}
+.menu-open .mobile-menu { opacity: 1; visibility: visible; }
+.mobile-menu a {
+  font-family: var(--caps);
+  font-size: 1.05rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--alabaster);
+  padding: 0.9rem 1.4rem;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), color 0.3s;
+}
+.menu-open .mobile-menu a { opacity: 1; transform: none; }
+.menu-open .mobile-menu a:nth-child(1) { transition-delay: 0.08s; }
+.menu-open .mobile-menu a:nth-child(2) { transition-delay: 0.14s; }
+.menu-open .mobile-menu a:nth-child(3) { transition-delay: 0.2s; }
+.menu-open .mobile-menu a:nth-child(4) { transition-delay: 0.26s; }
+.menu-open .mobile-menu a:nth-child(5) { transition-delay: 0.32s; }
+.mobile-menu a:hover { color: var(--gold-bright); }
+.mobile-menu .menu-cta {
+  margin-top: 1.4rem;
+  color: var(--gold-bright);
+  border: 1px solid rgba(217,190,127,0.5);
+  border-radius: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu, .mobile-menu a, .menu-btn span { transition: none; }
+}
 
 /* ============================================================
    HERO
@@ -1351,6 +1418,7 @@ footer ul a:hover { color: var(--gold-bright); }
   transition: transform 0.5s var(--ease);
 }
 .sticky-atc.show { transform: translateY(0); }
+.menu-open .sticky-atc { transform: translateY(110%); }
 .sticky-info { min-width: 0; }
 .sticky-info b {
   display: block;
@@ -1378,6 +1446,8 @@ footer ul a:hover { color: var(--gold-bright); }
 
 @media (max-width: 880px) {
   .nav-links { display: none; }
+  .menu-btn { display: flex; }
+  .nav-inner .btn-nav { display: none; }
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 3.5rem;
@@ -1443,8 +1513,19 @@ footer ul a:hover { color: var(--gold-bright); }
       <li><a href="#faq">FAQ</a></li>
     </ul>
     <a class="btn btn-gold btn-nav" href="#offer">Get the Mask</a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#ritual">The Ritual</a>
+  <a href="#actives">Six Actives</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#faq">FAQ</a>
+  <a class="menu-cta" href="#offer">Get the Mask</a>
+</div>
 
 <!-- ============ HERO ============ -->
 <header class="hero" id="top">
@@ -1939,6 +2020,26 @@ footer ul a:hover { color: var(--gold-bright); }
     word.insertBefore(frag, word.firstChild);
   });
 
+  /* ---------- mobile menu ---------- */
+  var menuBtn = document.getElementById('menuBtn');
+  var mobileMenu = document.getElementById('mobileMenu');
+  function setMenu(open) {
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    mobileMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  menuBtn.addEventListener('click', function () {
+    setMenu(!document.body.classList.contains('menu-open'));
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') setMenu(false);
+  });
+
   /* ---------- nav shadow ---------- */
   var nav = document.getElementById('siteNav');
   function onNavScroll() { nav.classList.toggle('scrolled', window.scrollY > 8); }
@@ -2039,11 +2140,20 @@ footer ul a:hover { color: var(--gold-bright); }
     plan.querySelector('input').addEventListener('change', function () { selectPlan(plan); });
   });
 
-  /* ---------- add to cart (front-end confirmation state) ---------- */
+  /* ---------- add to cart ----------
+     Paste your TikTok Shop / Shopify checkout link below to go live.
+     Empty string keeps the on-page confirmation state. */
+  var CHECKOUT_URL = '';
   var atcBtn = document.getElementById('atcBtn');
   var atcLabel = document.getElementById('atcLabel');
   var atcTimer = null;
   atcBtn.addEventListener('click', function () {
+    if (CHECKOUT_URL) {
+      var selected = document.querySelector('.plan.selected input');
+      var sep = CHECKOUT_URL.indexOf('?') > -1 ? '&' : '?';
+      window.location.href = CHECKOUT_URL + sep + 'plan=' + encodeURIComponent(selected ? selected.value : 'two');
+      return;
+    }
     if (atcTimer) clearTimeout(atcTimer);
     atcBtn.classList.add('added');
     atcLabel.textContent = 'Added to Cart ✓';
